@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="egovframework.example.sample.member.service.impl.MemberMapper">
+
+	<resultMap id="members"
+		type="egovframework.example.sample.member.service.MemberVO">
+		<result property="id" column="id" />
+		<result property="pw" column="pw" />
+		<result property="name" column="name" />
+		<result property="phone_number" column="phone_number" />
+	</resultMap>
+
+
+	<select id="insertMember" parameterType="memberVO"
+		resultType="String">
+		INSERT INTO customer(id, pw, name, phone_number)
+   		VALUES (#{id}, #{pw}, #{name}, #{phone_number})
+	</select>
+	
+	<select id="insertReview" parameterType="memberVO"
+		resultType="String">
+		INSERT INTO review(id, name, opinion, etcOpinion)
+   		VALUES (#{id}, #{name}, #{opinion}, #{etcOpinion})
+	</select>
+	
+	<select id="selectMember" parameterType="memberVO"
+		resultType="int">
+		SELECT count(idx)
+		FROM customer
+		WHERE 1=1
+		AND id = #{id}
+	</select>
+	
+	<select id="loginMember" parameterType="memberVO"
+		resultType="String">
+		SELECT name
+		FROM customer
+		WHERE 1=1
+		AND id = #{id}
+		AND pw = #{pw}
+	</select>
+
+	<select id="deleteMember" parameterType="memberVO"
+		resultType="String">
+		DELETE FROM customer
+		WHERE id = #{id}
+	</select>
+	
+	<select id="idxMember" parameterType="memberVO"
+		resultType="int">
+		SELECT idx
+		FROM customer
+		WHERE 1=1
+		AND id = #{id}
+		AND pw = #{pw}
+	</select>
+	
+	<update id="updateMember" parameterType="memberVO">
+
+		UPDATE customer
+		SET id = #{id, jdbcType=VARCHAR}
+		  ,name= #{name, jdbcType=VARCHAR}
+		  ,pw= #{pw, jdbcType=VARCHAR}
+		  ,phone_number= #{phone_number, jdbcType=VARCHAR}
+		  WHERE idx=#{idx}
+
+	</update>
+	
+	<select id="selectPhoneNumber" parameterType="memberVO"
+		resultType="String">
+		SELECT phone_number
+		FROM customer
+		WHERE 1=1
+		AND id = #{id}
+		AND pw = #{pw}
+	</select>
+</mapper>

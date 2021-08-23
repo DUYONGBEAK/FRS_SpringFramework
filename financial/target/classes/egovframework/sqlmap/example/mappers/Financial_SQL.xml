@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="egovframework.example.sample.financial.service.impl.FinancialMapper">
+
+	<resultMap id="financials"
+		type="egovframework.example.sample.financial.service.FinancialVO">
+		<result property="bank" column="bank" />
+		<result property="type" column="type" />
+		<result property="product_name" column="product_name" />
+		<result property="signup_target" column="signup_target" />
+		<result property="age" column="age" />
+		<result property="month1" column="month" />
+		<result property="month2" column="month" />
+		<result property="signup_amount_min1"
+			column="signup_amount_min" />
+		<result property="signup_amount_min2"
+			column="signup_amount_min" />
+		<result property="interest_min" column="interest_min" />
+		<result property="interest_max" column="interest_max" />
+	</resultMap>
+
+
+	<select id="selectDepositList" parameterType="financialVO"
+		resultType="egovMap">
+		SELECT A.bank, A.product_name, A.interest_min, A.interest_max, A.month
+		FROM(
+		SELECT bank, product_name, interest_min, interest_max, month
+		FROM dbankdata
+		WHERE 1=1
+		AND (age = #{age} OR age = "A")
+		AND signup_target = #{signup_target}
+		AND (month BETWEEN #{month1} AND #{month2})
+		AND (signup_amount_min BETWEEN #{signup_amount_min1} AND
+		#{signup_amount_min2})
+		ORDER BY interest_max DESC, month
+		limit 50
+		)A
+		GROUP BY bank, product_name, interest_min, interest_max, month
+	</select>
+	
+	<select id="selectSavingList" parameterType="financialVO"
+		resultType="egovMap">
+		SELECT A.bank, A.product_name, A.interest_min, A.interest_max, A.month
+		FROM(
+		SELECT bank, product_name, interest_min, interest_max, month
+		FROM sbankdata
+		WHERE 1=1
+		AND (age = #{age} OR age = "A")
+		AND signup_target = #{signup_target}
+		AND (month BETWEEN #{month1} AND #{month2})
+		ORDER BY interest_max DESC, month
+		limit 50
+		)A
+		GROUP BY bank, product_name, interest_min, interest_max, month
+	</select>
+	
+	<select id="selectLoanAmount" parameterType="financialVO"
+		resultType="String">
+		SELECT loan_limit
+		FROM lbankdata
+		WHERE 1=1
+		AND income = #{income}
+		AND married = #{married}
+		AND education = #{education}
+	</select>
+	
+	<select id="selectLoanInterest" parameterType="financialVO"
+		resultType="String">
+		SELECT interest_rate
+		FROM lbankdata
+		WHERE 1=1
+		AND income = #{income}
+		AND married = #{married}
+		AND education = #{education}
+	</select>
+</mapper>
